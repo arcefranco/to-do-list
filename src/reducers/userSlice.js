@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit/dist'
 import userService from './userService'
 
 // Get user from localStorage
- const user = JSON.parse(localStorage.getItem('user'))
+ const user = localStorage.getItem('user')
  
 const initialState = {
   user:  user ? user :  null,
