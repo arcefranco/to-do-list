@@ -61,12 +61,27 @@ export const postTodo = createAsyncThunk('todo/postTodo', async (body, thunkAPI)
     }
   })
 
+export const putTodo = createAsyncThunk('todo/putTodo', async (body, thunkAPI) => {
+  try {
+    
+    const session = await todoService.putTodo(body)
 
+    return session
+  } catch (error) {
+      console.log(error.response.data)
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString()
+    return thunkAPI.rejectWithValue(error.response.data)
+  }
+})
+
+ 
 
   export const userSlice = createSlice({
     name: 'user',
     initialState,
-    reducers: {
+    reducers: { 
       reset: (state) => {
         state.isLoading = false
         state.isSuccess = false
@@ -83,7 +98,7 @@ export const postTodo = createAsyncThunk('todo/postTodo', async (body, thunkAPI)
             state.isLoading = false
             state.isSuccess = true
             state.user = action.payload
-          }) 
+          })  
           .addCase(getUser.rejected, (state, action) => {
             state.isLoading = false
             state.isError = true
@@ -116,6 +131,20 @@ export const postTodo = createAsyncThunk('todo/postTodo', async (body, thunkAPI)
             state.isError = true
             state.message = action.payload
           })
+          .addCase(putTodo.pending, (state) => {
+            state.isLoading = true
+          })
+          .addCase(putTodo.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isSuccess = true
+            state.todos = state.todos.map(obj => [action.payload].find(o => o.todoId === obj.todoId) || obj)
+          }) 
+          .addCase(putTodo.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+          })
+          
         }
     })
 

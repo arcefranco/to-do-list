@@ -5,8 +5,8 @@ const URL = 'https://api-3sxs63jhua-uc.a.run.app/v1/todo'
 export const postTodo = async (body) => {
     const {id, payload} = body
     try {
-        console.log('this is body: ', payload)
         const response = await axios.post(`${URL}/${id}`, payload)
+    
         return response.data
     } catch (error) {
         console.log(error)
@@ -15,7 +15,19 @@ export const postTodo = async (body) => {
 }
 
 
-
+export const putTodo = async (body) => {
+    const {id} = body
+   console.log(body)
+    try {
+        const response = await axios.put(`${URL}/${id}`,body)
+        console.log('response: ', response)
+        response.data.todoId = body.todoId
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error
+    }
+}
 
 export const getTodos = async (id) => {
 try {
@@ -32,7 +44,8 @@ try {
 
 const todoService = {
     postTodo,
-    getTodos
+    getTodos,
+    putTodo
     }
     
     export default todoService
