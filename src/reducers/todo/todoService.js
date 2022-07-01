@@ -17,14 +17,23 @@ export const postTodo = async (body) => {
 
 export const putTodo = async (body) => {
     const {id} = body
-   console.log(body)
     try {
         const response = await axios.put(`${URL}/${id}`,body)
-        console.log('response: ', response)
         response.data.todoId = body.todoId
         return response.data
     } catch (error) {
         console.log(error)
+        return error
+    }
+}
+
+export const deleteTodo = async (body) => {
+    const {id} = body
+    try {
+        const response = await axios.delete(`${URL}/${id}`,{data: body})
+        response.data.todoId = body.todoId
+        return response.data
+    } catch (error) {
         return error
     }
 }
@@ -45,6 +54,7 @@ try {
 const todoService = {
     postTodo,
     getTodos,
+    deleteTodo,
     putTodo
     }
     

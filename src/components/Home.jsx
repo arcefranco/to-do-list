@@ -2,7 +2,7 @@ import React from 'react'
 import { getUser } from '../reducers/user/userSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { useState } from 'react'
-import { postTodo, putTodo } from '../reducers/user/userSlice'
+import { postTodo, putTodo, deleteTodo } from '../reducers/user/userSlice'
 
 function Home() {
 
@@ -50,6 +50,15 @@ const body = {
 
 dispatch(putTodo(body))
 }
+
+const onDelete = (event, todoId) => {
+  event.preventDefault()
+  const body = {
+    id: user,
+    todoId: todoId
+  }
+  dispatch(deleteTodo(body))
+}
  
 
   return (
@@ -66,7 +75,8 @@ dispatch(putTodo(body))
             <p>title: {e.title}</p>
             <p>message: {e.message}</p>
             <input type="checkbox" onChange={(event) => onChecked(event, e.todoId, e.completed)} onClick={(event) => onChecked(event, e.todoId, e.completed)} checked={e.completed} />
-         {/*   <button onClick={(event) => onChecked(event, e.todoId)}>Click</button>  */}
+            
+           <button onClick={(event) => onDelete(event, e.todoId)}>Delete</button>  
           </div>
         ))
       }

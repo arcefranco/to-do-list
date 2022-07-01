@@ -75,6 +75,20 @@ export const putTodo = createAsyncThunk('todo/putTodo', async (body, thunkAPI) =
     return thunkAPI.rejectWithValue(error.response.data)
   }
 })
+export const deleteTodo = createAsyncThunk('todo/deleteTodo', async (body, thunkAPI) => {
+  try {
+    
+    const session = await todoService.deleteTodo(body)
+
+    return session
+  } catch (error) {
+      console.log(error.response.data)
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString()
+    return thunkAPI.rejectWithValue(error.response.data)
+  }
+})
 
  
 
@@ -140,6 +154,19 @@ export const putTodo = createAsyncThunk('todo/putTodo', async (body, thunkAPI) =
             state.todos = state.todos.map(obj => [action.payload].find(o => o.todoId === obj.todoId) || obj)
           }) 
           .addCase(putTodo.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+          })
+          .addCase(deleteTodo.pending, (state) => {
+            state.isLoading = true
+          })
+          .addCase(deleteTodo.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isSuccess = true
+            state.todos = state.todos.filter(e => e.todoId !== action.payload.todoId)
+          }) 
+          .addCase(deleteTodo.rejected, (state, action) => {
             state.isLoading = false
             state.isError = true
             state.message = action.payload
