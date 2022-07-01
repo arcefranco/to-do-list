@@ -39,13 +39,13 @@ const onSubmit = async (e) => {
   message: ''
   })
 }
- const onChecked = (event, todoId) => {
+ const onChecked = (event, todoId, completed) => {
 event.preventDefault()
 
 const body = {
   id: user,
   todoId: todoId,
-  completed: true
+  completed: !completed
 }
 
 dispatch(putTodo(body))
@@ -65,7 +65,7 @@ dispatch(putTodo(body))
           <div key={e.todoId}>
             <p>title: {e.title}</p>
             <p>message: {e.message}</p>
-            <input type="checkbox" onChange={(event) => onChecked(event, e.todoId)} onClick={(event) => onChecked(event, e.todoId)} checked={e.completed} />
+            <input type="checkbox" onChange={(event) => onChecked(event, e.todoId, e.completed)} onClick={(event) => onChecked(event, e.todoId, e.completed)} checked={e.completed} />
          {/*   <button onClick={(event) => onChecked(event, e.todoId)}>Click</button>  */}
           </div>
         ))
