@@ -9,6 +9,7 @@ import todoService from '../todo/todoService'
 const initialState = {
   user:  user ? user :  null,
   todos: [],
+  todosBackUp: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -101,7 +102,17 @@ export const deleteTodo = createAsyncThunk('todo/deleteTodo', async (body, thunk
         state.isSuccess = false
         state.isError = false
         state.message = ''
+        state.todos = []
       },
+      completed: (state) => {
+      state.todos = state.todosBackUp.filter(e => e.completed)
+      },
+      uncompleted: (state) => {
+        state.todos = state.todosBackUp.filter(e => !e.completed)
+      },
+      all: (state) => {
+        state.todos = state.todosBackUp
+      }
     },
     extraReducers: (builder) => {
         builder
@@ -139,6 +150,7 @@ export const deleteTodo = createAsyncThunk('todo/deleteTodo', async (body, thunk
             state.isLoading = false
             state.isSuccess = true
             state.todos = [...state.todos, action.payload]
+            state.todosBackUp = [...state.todos, action.payload]
           }) 
           .addCase(postTodo.rejected, (state, action) => {
             state.isLoading = false
@@ -152,6 +164,7 @@ export const deleteTodo = createAsyncThunk('todo/deleteTodo', async (body, thunk
             state.isLoading = false
             state.isSuccess = true
             state.todos = state.todos.map(obj => [action.payload].find(o => o.todoId === obj.todoId) || obj)
+            state.todosBackUp =  state.todos.map(obj => [action.payload].find(o => o.todoId === obj.todoId) || obj)
           }) 
           .addCase(putTodo.rejected, (state, action) => {
             state.isLoading = false
@@ -165,6 +178,7 @@ export const deleteTodo = createAsyncThunk('todo/deleteTodo', async (body, thunk
             state.isLoading = false
             state.isSuccess = true
             state.todos = state.todos.filter(e => e.todoId !== action.payload.todoId)
+            state.todosBackUp =  state.todos.filter(e => e.todoId !== action.payload.todoId)
           }) 
           .addCase(deleteTodo.rejected, (state, action) => {
             state.isLoading = false
@@ -176,5 +190,5 @@ export const deleteTodo = createAsyncThunk('todo/deleteTodo', async (body, thunk
     })
 
 
-export const { reset } = userSlice.actions
+export const { reset, completed, uncompleted, all } = userSlice.actions
 export default userSlice.reducer

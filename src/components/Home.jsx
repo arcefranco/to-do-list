@@ -2,7 +2,7 @@ import React from 'react'
 import { getUser } from '../reducers/user/userSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { useState } from 'react'
-import { postTodo, putTodo, deleteTodo } from '../reducers/user/userSlice'
+import { postTodo, putTodo, deleteTodo, completed, uncompleted, all, reset } from '../reducers/user/userSlice'
 
 function Home() {
 
@@ -22,6 +22,8 @@ const [input, setInput] = useState({
   title: '',
   message: ''
   }) 
+
+const [select, setSelect] = useState("all")
 const handleChange = (e) => {
     const { name, value } = e.target;
     const newForm = { ...input, [name]: value };
@@ -59,16 +61,32 @@ const onDelete = (event, todoId) => {
   }
   dispatch(deleteTodo(body))
 }
- 
+
+const onSelect = (e) => {
+  setSelect(e.target.value)
+
+if(e.target.value === "completed"){
+  dispatch(completed())
+}else if(e.target.value === "uncompleted"){
+  dispatch(uncompleted())
+}else{
+  dispatch(all())
+}
+ }
 
   return (
     <div>
+      <select name="" id="" onChange={(e) => onSelect(e)}>
+        <option value="all">ALL</option>
+        <option value="completed">COMPLETED</option>
+        <option value="uncompleted">UNCOMPLETED</option>
+      </select>
     <form> 
         <input type="text" value={input.title} onChange={handleChange} name="title" placeholder='title'/>
         <input type="text" value={input.message} onChange={handleChange} name="message" placeholder='message'/>
         <button type='submit' onClick={onSubmit}>Submit</button>
      </form> 
-
+    <button onClick={() => dispatch(reset())}>Reset</button>
       {
         todos.length>=1 && todos.map(e => (
           <div key={e.todoId}>
@@ -76,7 +94,8 @@ const onDelete = (event, todoId) => {
             <p>message: {e.message}</p>
             <input type="checkbox" onChange={(event) => onChecked(event, e.todoId, e.completed)} onClick={(event) => onChecked(event, e.todoId, e.completed)} checked={e.completed} />
             
-           <button onClick={(event) => onDelete(event, e.todoId)}>Delete</button>  
+           <button onClick={(event) => onDelete(event, e.todoId)}>Delete</button>
+             
           </div>
         ))
       }
