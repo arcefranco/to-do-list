@@ -10,7 +10,7 @@ const dispatch = useDispatch()
 
 
 React.useEffect(()=>{
-dispatch(getUser())
+ dispatch(getUser()) 
 }, [])
 
 
@@ -75,7 +75,7 @@ if(e.target.value === "completed"){
  }
 
   return (
-    <div>
+    <div data-testid='Home'>
       <select name="" id="" onChange={(e) => onSelect(e)}>
         <option value="all">ALL</option>
         <option value="completed">COMPLETED</option>

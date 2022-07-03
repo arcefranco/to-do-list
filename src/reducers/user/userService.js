@@ -9,7 +9,7 @@ const response = await axios.get(`${URL}userId`)
     if (response.data) {
       localStorage.setItem('user', response.data)
     }else{
-        return 'No given userId'
+        return false
     }
   
     return response.data
