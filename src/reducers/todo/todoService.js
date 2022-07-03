@@ -55,7 +55,7 @@ const todoService = {
     postTodo,
     getTodos,
     deleteTodo,
-    putTodo
+    putTodo,
     }
     
     export default todoService
