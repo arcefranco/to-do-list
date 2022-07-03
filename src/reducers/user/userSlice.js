@@ -110,10 +110,10 @@ export const deleteTodo = createAsyncThunk('todo/deleteTodo', async (body, thunk
       postTitle: (state, action) => {
         state.title = action.payload
       },
-      completed: (state) => {
+      completedTask: (state) => {
       state.todos = state.todosBackUp.filter(e => e.completed)
       },
-      uncompleted: (state) => {
+      uncompletedTask: (state) => {
         state.todos = state.todosBackUp.filter(e => !e.completed)
       },
       all: (state) => {
@@ -197,5 +197,5 @@ export const deleteTodo = createAsyncThunk('todo/deleteTodo', async (body, thunk
     })
 
 
-export const { reset, completed, uncompleted, all, postTitle } = userSlice.actions
+export const { reset, completedTask, uncompletedTask, all, postTitle } = userSlice.actions
 export default userSlice.reducer

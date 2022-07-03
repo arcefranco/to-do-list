@@ -2,7 +2,10 @@ import React from 'react'
 import { getUser } from '../reducers/user/userSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { useState } from 'react'
-import { postTodo, putTodo, deleteTodo, completed, uncompleted, all, reset, postTitle } from '../reducers/user/userSlice'
+import { postTodo, putTodo, deleteTodo, completedTask, uncompletedTask, all, reset, postTitle } from '../reducers/user/userSlice'
+import Modal from './Modal'
+import plus from '../assets/plus.png'
+import styles from './Home.module.css'
 
 
 function Home() {
@@ -25,6 +28,7 @@ const {user, todos, title, todosBackup} = useSelector(
   }) 
   const [uncompleted, setUncompleted] = useState(true)
   const [completed, setCompleted] = useState(true)
+  const [modalClose, setModalClose] = useState(false)
 
 const [select, setSelect] = useState("all")
 
@@ -86,13 +90,14 @@ const onDelete = (event, todoId) => {
   dispatch(deleteTodo(body))
 }
 
+
 const onSelect = (e) => {
   setSelect(e.target.value)
 
 if(e.target.value === "completed"){
-  dispatch(completed())
+  dispatch(completedTask())
 }else if(e.target.value === "uncompleted"){
-  dispatch(uncompleted())
+  dispatch(uncompletedTask())
 }else{
   dispatch(all())
 }
@@ -110,60 +115,97 @@ const handleSelect = () => {
 
 }
 
+const handelModalSubmit = (e) => {
+  e.preventDefault()
+  dispatch(reset())
+  setModalClose(false)
+}
+
   return (
-    <div data-testid='Home'>
-      {
-       title && todos.length >=1 &&
-       <div>
-        <select name="" id="" onChange={(e) => onSelect(e)} onClick={() => handleSelect()}>
-        <option value="all">ALL</option>
-        <option value="completed" disabled={completed}>COMPLETED</option>
-        <option value="uncompleted"disabled={uncompleted}>UNCOMPLETED</option>
-      </select>
-      <button onClick={() => dispatch(reset())}>Reset</button>
-        </div>
-        
-      }
+    <div className={styles.container}>
       
     
-    <form> 
+    <form className={styles.form}> 
         {
           todos.length===0 && 
-          <div>
+          <div className={styles.firstDiv}>
         <input type="text" value={input.title} onChange={handleChange} name="title" placeholder='title'/>
-        <p>¿Qué cosas tenes que hacer hoy?</p>
+        <p style={{fontFamily:'Helvetica'}}>¿Qué cosas tenés que terminar hoy?</p>
          
-           <input type="text" value={input.message} onChange={handleChange} name="message" placeholder='message'/><br />
-        <button type='submit' disabled={!input.message} onClick={onSubmitTitle}>Submit</button>
+           <input type="text" value={input.message} onChange={handleChange} name="message" placeholder='Escribí un item'/><br />
+        <button type='submit' className={styles.firstButton} disabled={!input.message} onClick={onSubmitTitle}>Agregar</button>
         </div>
         } 
           {
           todos.length>=1 &&  
-          <div>
+          <div className={styles.containerForm}>
+          <input type="text" value={input.message} onChange={handleChange} name="message" placeholder='Escribí un item'/><br />
 
-         
-           <input type="text" value={input.message} onChange={handleChange} name="message" placeholder='message'/><br />
-        <button type='submit' disabled={!input.message} onClick={onSubmit}>Submit</button>
+            <div className={styles.itemBox}>
+                <div style={{display:'flex', placeContent:'space-between'}}>
+                  <div className={styles.todoTitle}>
+                    <h2>{title}</h2>
+              
+              <button style={{background:'none', border:'none', cursor:'pointer'}} type="button" onClick={() => setModalClose(true)}>
+                <img src={plus} style={{width:'2rem', height:'2rem'}} alt="" />  <img/>
+                </button>
+                 
+                  </div>
+                <div style={{marginTop:'20px'}}>
+                         <select style={{border:'none'}} onChange={(e) => onSelect(e)} onClick={() => handleSelect()}>
+        <option value="all">ALL</option>
+        <option value="completed" disabled={completed}>COMPLETED</option>
+        <option value="uncompleted"disabled={uncompleted}>UNCOMPLETED</option>
+      </select>
+                </div>
+ 
         </div>
-        }
-        
-   
-     </form> 
-    {
-      todos.length>=1 && <h1>{title}</h1>
-    }
-
-      {
-        todos.length>=1 && todos.map(e => (
-          <div key={e.todoId}>
-            <p>message: {e.message}</p>
-            <input type="checkbox" onChange={(event) => onChecked(event, e.todoId, e.completed)} onClick={(event) => onChecked(event, e.todoId, e.completed)} checked={e.completed} />
+                {
+               todos.map(e => (
+          <div key={e.todoId} className={styles.containerTodo}>
+            <div style={{display:'flex'}}>
+               <input type="checkbox" onChange={(event) => onChecked(event, e.todoId, e.completed)} onClick={(event) => onChecked(event, e.todoId, e.completed)} checked={e.completed} />
+            <p style={{fontWeight:'bold'}}>{e.message}</p>
+            </div>
+           
             
            <button  onClick={(event) => onDelete(event, e.todoId)}>Delete</button>
              
           </div>
         ))
-      }
+          }
+
+            </div>
+
+
+
+
+
+          <button type='submit' disabled={!input.message} className={styles.firstButton} onClick={onSubmit}>Agregar</button>
+        </div>
+        }
+        
+   
+     </form> 
+
+
+                  {modalClose === true && <Modal>
+                 
+                      <div className={styles.modalTitle}>
+                        <h2>Empezar nueva lista</h2>
+                        <p>Cuando empezas una nueva lista, tu lista existente se elimina <br /><br />
+                        ¿Estás seguro de que quieres empezar una nueva lista?
+                        </p>
+                      </div>
+                      <div className={styles.modalButtons}> 
+                        <button onClick={(e) => handelModalSubmit(e)} className={styles.newList}>Nueva lista</button> 
+                      <button onClick={() => setModalClose(false)} className={` ${styles.modalClose}`}>Cancelar</button>
+
+                      </div>
+                      
+                   
+                      </Modal>
+                      } 
         
 
 
