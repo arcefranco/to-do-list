@@ -1,10 +1,10 @@
 import React from 'react'
-import { getUser } from '../reducers/user/userSlice'
+import { getUser } from '../../reducers/user/userSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { useState } from 'react'
-import { postTodo, putTodo, deleteTodo, completedTask, uncompletedTask, all, reset, postTitle } from '../reducers/user/userSlice'
-import Modal from './Modal'
-import plus from '../assets/plus.png'
+import { postTodo, putTodo, deleteTodo, completedTask, uncompletedTask, all, reset, postTitle } from '../../reducers/user/userSlice'
+import Modal from '../Modal/Modal'
+import plus from '../../assets/plus.png'
 import styles from './Home.module.css'
 
 
@@ -29,14 +29,14 @@ const {user, todos, title, todosBackup} = useSelector(
   const [uncompleted, setUncompleted] = useState(true)
   const [completed, setCompleted] = useState(true)
   const [modalClose, setModalClose] = useState(false)
-
-const [select, setSelect] = useState("all")
+  const [select, setSelect] = useState("all")
 
 const handleChange = (e) => {
     const { name, value } = e.target;
     const newForm = { ...input, [name]: value };
     setInput(newForm);
 };
+
 const onSubmit = async (e) => {
   e.preventDefault()
   const body = {
@@ -51,6 +51,7 @@ const onSubmit = async (e) => {
   message: ''
   })
 }
+
 const onSubmitTitle = (e) => {
   e.preventDefault()
   const body = {
@@ -68,7 +69,7 @@ const onSubmitTitle = (e) => {
 
 }
 
- const onChecked = (event, todoId, completed) => {
+const onChecked = (event, todoId, completed) => {
 event.preventDefault()
 
 const body = {
@@ -128,68 +129,62 @@ const handelModalSubmit = (e) => {
     <form className={styles.form}> 
         {
           todos.length===0 && 
-          <div className={styles.firstDiv}>
-        <input type="text" value={input.title} onChange={handleChange} name="title" placeholder='title'/>
-        <p style={{fontFamily:'Helvetica'}}>¿Qué cosas tenés que terminar hoy?</p>
+        <div className={styles.firstDiv}>
+            <input type="text" value={input.title} onChange={handleChange} name="title" placeholder='title'/>
+            <p style={{fontFamily:'Helvetica'}}>¿Qué cosas tenés que terminar hoy?</p>
          
-           <input type="text" value={input.message} onChange={handleChange} name="message" placeholder='Escribí un item'/><br />
-        <button type='submit' className={styles.firstButton} disabled={!input.message} onClick={onSubmitTitle}>Agregar</button>
+            <input type="text" value={input.message} onChange={handleChange} name="message" placeholder='Escribí un item'/><br />
+            <button type='submit' className={styles.firstButton} disabled={!input.message} onClick={onSubmitTitle}>Agregar</button>
         </div>
         } 
           {
           todos.length>=1 &&  
           <div className={styles.containerForm}>
-          <input type="text" value={input.message} onChange={handleChange} name="message" placeholder='Escribí un item'/><br />
+            <input type="text" value={input.message} onChange={handleChange} name="message" placeholder='Escribí un item'/><br />
 
             <div className={styles.itemBox}>
                 <div style={{display:'flex', placeContent:'space-between'}}>
                   <div className={styles.todoTitle}>
                     <h2>{title}</h2>
               
-              <button style={{background:'none', border:'none', cursor:'pointer'}} type="button" onClick={() => setModalClose(true)}>
-                <img src={plus} style={{width:'2rem', height:'2rem'}} alt="" />  <img/>
-                </button>
+                    <button style={{background:'none', border:'none', cursor:'pointer'}} type="button" onClick={() => setModalClose(true)}>
+                    <img src={plus} style={{width:'2rem', height:'2rem'}} alt="" />  <img/>
+                    </button>
                  
                   </div>
                 <div style={{marginTop:'20px'}}>
-                         <select style={{border:'none'}} onChange={(e) => onSelect(e)} onClick={() => handleSelect()}>
-        <option value="all">ALL</option>
-        <option value="completed" disabled={completed}>COMPLETED</option>
-        <option value="uncompleted"disabled={uncompleted}>UNCOMPLETED</option>
-      </select>
+                    <select style={{border:'none'}} onChange={(e) => onSelect(e)} onClick={() => handleSelect()}>
+                      <option value="all">ALL</option>
+                      <option value="completed" disabled={completed}>COMPLETED</option>
+                      <option value="uncompleted"disabled={uncompleted}>UNCOMPLETED</option>
+                    </select>
                 </div>
  
-        </div>
+                </div>
                 {
                todos.map(e => (
           <div key={e.todoId} className={styles.containerTodo}>
             <div style={{display:'flex'}}>
-               <input type="checkbox" onChange={(event) => onChecked(event, e.todoId, e.completed)} onClick={(event) => onChecked(event, e.todoId, e.completed)} checked={e.completed} />
-            <p style={{fontWeight:'bold'}}>{e.message}</p>
+              <input type="checkbox" onChange={(event) => onChecked(event, e.todoId, e.completed)} onClick={(event) => onChecked(event, e.todoId, e.completed)} checked={e.completed} />
+              <p style={{fontWeight:'bold'}}>{e.message}</p>
             </div>
            
             
-           <button  onClick={(event) => onDelete(event, e.todoId)}>Delete</button>
+              <button  onClick={(event) => onDelete(event, e.todoId)}>Delete</button>
              
           </div>
         ))
           }
 
             </div>
-
-
-
-
-
-          <button type='submit' disabled={!input.message} className={styles.firstButton} onClick={onSubmit}>Agregar</button>
-        </div>
+              <button type='submit' disabled={!input.message} className={styles.firstButton} onClick={onSubmit}>Agregar</button>
+          </div>
         }
         
    
      </form> 
 
-
-                  {modalClose === true && <Modal>
+{modalClose === true && <Modal>
                  
                       <div className={styles.modalTitle}>
                         <h2>Empezar nueva lista</h2>
@@ -198,7 +193,7 @@ const handelModalSubmit = (e) => {
                         </p>
                       </div>
                       <div className={styles.modalButtons}> 
-                        <button onClick={(e) => handelModalSubmit(e)} className={styles.newList}>Nueva lista</button> 
+                        <button onClick={(e) => handelModalSubmit(e)} className={styles.newList} >Nueva lista</button> 
                       <button onClick={() => setModalClose(false)} className={` ${styles.modalClose}`}>Cancelar</button>
 
                       </div>
